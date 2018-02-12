@@ -11,8 +11,7 @@ using namespace std;
 // Sort range a to b
 template <typename Tdata>
 void quicksort(vector<Tdata> & din, int a, int b) { 
-    // Old code for quicksort in part A
-    /*if(b<=a) return;
+    if(b<=a) return;
     int N = b-a+1;
     int pi = rand()%N+a;
     Tdata pivot = din[pi];
@@ -27,13 +26,7 @@ void quicksort(vector<Tdata> & din, int a, int b) {
 
     swap(din,i,b);
     quicksort(din,a,i-1);
-    quicksort(din,i+1,b);*/
-    
-    // sorting specified on certain range
-    int N = din.size();
-    quickselect(din,0,a,N-1);
-    for (int i=a;i<b;i++)
-        quickselect(din,a,i,N-1);
+    quicksort(din,i+1,b);
 }
 
 // Find the correct data for a certain index and place it there
@@ -97,47 +90,32 @@ istream & operator>>(istream &in, person_t &r) {
 // Output for a person_t last, first, phone
 ostream & operator<<(ostream &out, const person_t &r) {
     int len = r.lastname.size()+r.firstname.size();
-    out << r.lastname << ' ' << r.firstname << setw(30-len) << r.phonenum;
+    out << r.lastname << ' ' << r.firstname << setw(35-len) << r.phonenum;
     return out;
 }
 
 // Print the array with iterators
 void printlist(const vector<person_t>::iterator &start,const vector<person_t>::iterator &end,int k0,int k1) {
     vector<person_t>::iterator it = start;
-    int count = 0;
     while (it!=end) {
-        cout << *it << setw(5) << count;
-        if (count >= k0 && count <= k1)  
-            cout << setw(3) << '*' << '\n';
-        else cout << '\n';
-        ++it; count++;
+        cout << *it  << '\n';
+        ++it; 
     }
 }
 
 int main(int argc, char *argv[]) {
-    // perform command-line check 
     srand(time(NULL));
     vector<person_t> A;   
-
     person_t din;
     while (cin >> din)
         A.push_back(din);
-
     int N = (int)A.size();
-    
-    // Error checking and input on ranges
-    int k0 = 0;
+
+    // perform command-line check 
+    // if given as command-line arguments,
+    // update k0, k1 and apply quickselect
+    int k0 = 0, k1 = N-1;
     if (argv[1]) k0 = atoi(argv[1]);
-    else if (!argv[2] && argv[1]) {
-        k0 = atoi(argv[1]);
-        quicksort(A,k0,A.size()-1);
-    }
-    else {
-        quicksort(A,0,A.size()-1);
-        printlist(A.begin(),A.end(),0,0);
-        return 0;
-    }
-    int k1 = N-1;
     if (argv[2]) k1 = atoi(argv[2]);
     if (k1<k0) {
         cerr << "Please enter a valid range\n";
@@ -147,10 +125,10 @@ int main(int argc, char *argv[]) {
         cerr << "Please enter a valid index\n";
         return 0;
     }
-    // if given as command-line arguments,
-    // update k0, k1 and apply quickselect
+    
     // to partition A accordingly
-
+    quickselect(A,0,k0,N-1);
+    quickselect(A,k0,k1,N-1);
     quicksort(A, k0, k1);
     printlist(A.begin(),A.end(),k0,k1);
 }

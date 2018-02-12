@@ -1,0 +1,3 @@
+red 1
+blue 2.34
+orange 4.534
