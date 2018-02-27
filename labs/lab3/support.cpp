@@ -11,6 +11,9 @@ const char ETX = 0x3;
 void ppm::read(const char *fname) {
     fstream fin;
     fin.open(fname);
+    if (fin.fail()) {
+        cout << "Error: cannot open " << fname << " for reading!\n"; exit(1);
+    }
     string magicid;
     int ncols, nrows;
     int maxvalue;

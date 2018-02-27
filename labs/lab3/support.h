@@ -54,7 +54,8 @@ class RGB {
         uchar b() { return B; }
         void set_r(uchar r) { R=r; }
         void set_g(uchar g) { G=g; }
-        void set_b(uchar b) { B=b; }  
+        void set_b(uchar b) { B=b; }
+        int hist() { return (R>>4)<<8 | (G>>4)<<4 | (B>>4); }
     private:
         uchar R,G,B;
 };
