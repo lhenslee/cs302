@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <cstring>
 #include "support.cpp"
 using namespace std;
 
@@ -9,12 +10,31 @@ using namespace std;
 
 void set_pixel_list(ppm &img, vector<pixel> &v) {
     // two for loops and a push_back
+    rnumgen RNG(0);
     int nrows,ncols;
     nrows = img.get_Nrows();
     ncols = img.get_Ncols();
-    for (int i=0;i<nrows;i+=2) {
-        for (int j=0;j<ncols;j+=2)
+    for (int i=0;i<nrows;i++) {
+        for (int j=0;j<ncols;j++)
             v.push_back(pixel(i,j));
+    }
+
+    // get histogram
+    vector<int> hist(4096, 0);
+    for (int i=0; i<nrows; i++) {
+        for (int j=0; j<ncols; j++) {
+            int color = img[i][j].color();
+            hist[color]++;
+        }
+    }
+    RNG.pdf(hist);
+
+    for(int i=(int)v.size()-1; i>0; --i) {
+        int r1 = RNG.rand();
+        int r2 = RNG.rand();
+        int r24 = (r1<<12) | r2;
+        //cout << r12_1 << ' ' << r12_2 << ' ' << r24 << '\n';
+        swap(v[i],v[r24%(i+1)]);
     }
 }
 
@@ -22,7 +42,7 @@ void encode(ppm &img,const char*fname) {
     // write this
     vector<pixel> v;
     set_pixel_list(img,v);
-    
+
     string magicid;
     int ncols, nrows, maxvalue;
 
@@ -134,7 +154,7 @@ int main(int argc, char *argv[]) {
     if (strcmp(mode,"-encode")==0) { encode(img,fname); img.write(outfile); }
     else if (strcmp(mode,"-decode")==0) decode(img);
     else {
-        cerr << "usage:crypto -encode|decode image.ppm\n";
+        cerr << "usage: crypto -encode|decode image.ppm\n";
         exit(1);
     }
 }

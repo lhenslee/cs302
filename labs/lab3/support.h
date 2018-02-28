@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <fstream>
+#include <cstdlib>
 
 typedef unsigned char uchar;
 extern const char ETX;
@@ -46,7 +47,7 @@ class RGB {
     public: 
         RGB(uchar r=0, uchar g=0, int b=0) { R=r; G=g; B=b; }
         friend std::ostream& operator<<(std::ostream& os, const RGB& rgb) {
-            os << rgb.R << rgb.G << rgb.B;
+            os << '(' << (int)rgb.R << ',' << (int)rgb.G << ',' << (int)rgb.B << ')';
             return os;
         }
         uchar r() { return R; }
@@ -55,9 +56,19 @@ class RGB {
         void set_r(uchar r) { R=r; }
         void set_g(uchar g) { G=g; }
         void set_b(uchar b) { B=b; }
-        int hist() { return (R>>4)<<8 | (G>>4)<<4 | (B>>4); }
+        int color() { return ((R>>4)<<8 | (G>>4)<<4 | (B>>4)); }
     private:
         uchar R,G,B;
+};
+
+class rnumgen {
+    public:
+        rnumgen(int seed=0) { srand(seed); }
+
+        void pdf(const std::vector<int> &);
+        int rand() const;
+    private:
+        std::vector<float> F;
 };
 
 class ppm {

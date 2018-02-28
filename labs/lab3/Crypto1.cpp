@@ -1,3 +1,4 @@
+#include <cstring>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -134,7 +135,7 @@ int main(int argc, char *argv[]) {
     if (strcmp(mode,"-encode")==0) { encode(img,fname); img.write(outfile); }
     else if (strcmp(mode,"-decode")==0) decode(img);
     else {
-        cerr << "usage:crypto -encode|decode image.ppm\n";
+        cerr << "usage: crypto -encode|decode image.ppm\n";
         exit(1);
     }
 }
